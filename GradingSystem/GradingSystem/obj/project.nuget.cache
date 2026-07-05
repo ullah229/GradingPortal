@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "LA4KKrPCUiw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Ullah\\source\\repos\\GradingSystem\\GradingSystem\\GradingSystem.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Ullah\\.nuget\\packages\\spectre.console\\0.56.0\\spectre.console.0.56.0.nupkg.sha512",
+    "C:\\Users\\Ullah\\.nuget\\packages\\spectre.console.ansi\\0.56.0\\spectre.console.ansi.0.56.0.nupkg.sha512"
+  ],
+  "logs": []
+}

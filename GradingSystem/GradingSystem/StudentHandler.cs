@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GradingSystem
-{
+namespace GradingSystem;
     internal class StudentHandler
     {
 
@@ -16,40 +15,57 @@ namespace GradingSystem
                 AnsiConsole.MarkupLine($"Welcome [yellow]Martin[/] zum {SelectedClass.Name} portal");
                 AnsiConsole.WriteLine();
 
-                if (SelectedClass.Students.Count > 0)
-                {
-                    AnsiConsole.MarkupLine("[bold]List of students:[/]");
-                    foreach (Student student in SelectedClass.Students.OrderBy(k => k.Name))
-                    {
-                        AnsiConsole.MarkupLine($"- [cyan]{student.Name}[/]");
-                    }
-                }
-                else
-                {
-                    AnsiConsole.MarkupLine("[red]No students yet.[/]");
-                }
-
+                ListStudents(SelectedClass);
                 AnsiConsole.WriteLine();
+                bool GoBack = SelectOptions(SelectedClass);
+
+                if (GoBack) 
+                {
+                    return;
+                }
+            }
+        }
+
+        private void ListStudents(Class SelectedClass)
+        {
+            if (SelectedClass.Students.Count > 0)
+            {
+                AnsiConsole.MarkupLine("[bold]List of students:[/]");
+                foreach (Student student in SelectedClass.Students.OrderBy(k => k.Name))
+                {
+                    AnsiConsole.MarkupLine($"- [cyan]{student.Name}[/]");
+                }
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]No students yet.[/]");
+            }
+        }
+
+        private bool SelectOptions(Class SelectedClass)
+        {
                 string option = AnsiConsole.Ask<string>(
-                    "Press [green]a[/] to add a student, [green]d[/] to delete a student, [green]s[/] to select a student, [red]b[/] to go back:");
+        "Press [green]a[/] to add a student, [green]d[/] to delete a student, [green]s[/] to select a student, [red]b[/] to go back:");
 
                 if (option == "a")
                 {
+                    //Add
                     Student student = new Student();
                     InputHandler ihandler = new InputHandler();
-                    ihandler.RunStudent(student);
+                    ihandler.ConfigureStudent(student);
                     SelectedClass.Students.Add(student);
                 }
                 else if (option == "d")
                 {
+                    //Delete
                     if (SelectedClass.Students.Count == 0)
                     {
                         AnsiConsole.MarkupLine("[red]Nothing to delete.[/]");
                         AnsiConsole.Ask<string>("Press Enter to continue");
-                        continue;
+                        return false;
                     }
 
-                    int classnr = AnsiConsole.Ask<int>("Which class number do you want to delete?");
+                    int classnr = AnsiConsole.Ask<int>("Which student do you want to delete?");
                     if (classnr >= 1 && classnr <= SelectedClass.Students.Count)
                     {
                         SelectedClass.Students.RemoveAt(classnr - 1);
@@ -62,11 +78,12 @@ namespace GradingSystem
                 }
                 else if (option == "s")
                 {
+                    //Select
                     if (SelectedClass.Students.Count == 0)
                     {
                         AnsiConsole.MarkupLine("[red]No classes to select.[/]");
                         AnsiConsole.Ask<string>("Press Enter to continue");
-                        continue;
+                        return false;
                     }
 
                     Student selectedStudent = AnsiConsole.Prompt(
@@ -74,12 +91,14 @@ namespace GradingSystem
                             .Title("Which Student do you want to select?")
                             .UseConverter(k => k.Name)
                             .AddChoices(SelectedClass.Students.OrderBy(k => k.Name)));
+                    SubjectHandler shandler = new SubjectHandler();
+                    shandler.Run(selectedStudent);
                 }
-                else if(option == "b")
+                else if (option == "b")
                 {
-                    return;
+                    //Go Back
+                    return true;
                 }
+                return false;
             }
-        }
     }
-}

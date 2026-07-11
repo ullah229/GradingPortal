@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-internal class FileManager
+public class FileManager
 {
     private const string FilePath = "classes.json";
 

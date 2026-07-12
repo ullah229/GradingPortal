@@ -6,6 +6,7 @@ using System.Text;
 namespace GradingSystem;
     internal class StudentHandler
     {
+        UI ui = new UI();
 
         public void Run(Class SelectedClass) 
         {
@@ -28,71 +29,27 @@ namespace GradingSystem;
 
         private void ListStudents(Class SelectedClass)
         {
-            if (SelectedClass.Students.Count > 0)
-            {
-                AnsiConsole.MarkupLine("[bold]List of students:[/]");
-                foreach (Student student in SelectedClass.Students.OrderBy(k => k.Name))
-                {
-                    AnsiConsole.MarkupLine($"- [cyan]{student.Name}[/]");
-                }
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[red]No students yet.[/]");
-            }
+            ui.ListStudents(SelectedClass.Students);
         }
 
         private bool SelectOptions(Class SelectedClass)
         {
-                string option = AnsiConsole.Ask<string>(
-        "Press [green]a[/] to add a student, [green]d[/] to delete a student, [green]s[/] to select a student, [red]b[/] to go back:");
+                string option = ui.SelectOptions();
 
                 if (option == "a")
                 {
                     //Add
-                    Student student = new Student();
-                    InputHandler ihandler = new InputHandler();
-                    ihandler.ConfigureStudent(student);
-                    SelectedClass.Students.Add(student);
+                    AddStudent(SelectedClass);
                 }
                 else if (option == "d")
                 {
                     //Delete
-                    if (SelectedClass.Students.Count == 0)
-                    {
-                        AnsiConsole.MarkupLine("[red]Nothing to delete.[/]");
-                        AnsiConsole.Ask<string>("Press Enter to continue");
-                        return false;
-                    }
-
-                    int classnr = AnsiConsole.Ask<int>("Which student do you want to delete?");
-                    if (classnr >= 1 && classnr <= SelectedClass.Students.Count)
-                    {
-                        SelectedClass.Students.RemoveAt(classnr - 1);
-                    }
-                    else
-                    {
-                        AnsiConsole.MarkupLine("[red]Invalid number.[/]");
-                        AnsiConsole.Ask<string>("Press Enter to continue");
-                    }
+                    DeleteStudent(SelectedClass);
                 }
                 else if (option == "s")
                 {
                     //Select
-                    if (SelectedClass.Students.Count == 0)
-                    {
-                        AnsiConsole.MarkupLine("[red]No classes to select.[/]");
-                        AnsiConsole.Ask<string>("Press Enter to continue");
-                        return false;
-                    }
-
-                    Student selectedStudent = AnsiConsole.Prompt(
-                        new SelectionPrompt<Student>()
-                            .Title("Which Student do you want to select?")
-                            .UseConverter(k => k.Name)
-                            .AddChoices(SelectedClass.Students.OrderBy(k => k.Name)));
-                    SubjectHandler shandler = new SubjectHandler();
-                    shandler.Run(selectedStudent);
+                    SelectStudent(SelectedClass);
                 }
                 else if (option == "b")
                 {
@@ -101,4 +58,50 @@ namespace GradingSystem;
                 }
                 return false;
             }
-    }
+        private void AddStudent(Class SelectedClass)
+        {
+            Student student = new Student();
+            InputHandler ihandler = new InputHandler();
+            ihandler.ConfigureStudent(student);
+            SelectedClass.Students.Add(student);
+        }
+        private void SelectStudent(Class SelectedClass)
+        {
+            //Select
+            if (SelectedClass.Students.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No classes to select.[/]");
+                AnsiConsole.Ask<string>("Press Enter to continue");
+                return;
+            }
+
+            Student selectedStudent = AnsiConsole.Prompt(
+                new SelectionPrompt<Student>()
+                    .Title("Which Student do you want to select?")
+                    .UseConverter(k => k.Name)
+                    .AddChoices(SelectedClass.Students.OrderBy(k => k.Name)));
+            SubjectHandler shandler = new SubjectHandler();
+            shandler.Run(selectedStudent);
+        }
+        private void DeleteStudent(Class SelectedClass)
+        {
+            //Delete
+            if (SelectedClass.Students.Count == 0)
+            {
+                AnsiConsole.MarkupLine("[red]Nothing to delete.[/]");
+                AnsiConsole.Ask<string>("Press Enter to continue");
+                return;
+            }
+
+            int classnr = AnsiConsole.Ask<int>("Which student do you want to delete?");
+            if (classnr >= 1 && classnr <= SelectedClass.Students.Count)
+            {
+                SelectedClass.Students.RemoveAt(classnr - 1);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Invalid number.[/]");
+                AnsiConsole.Ask<string>("Press Enter to continue");
+            }
+        }
+}

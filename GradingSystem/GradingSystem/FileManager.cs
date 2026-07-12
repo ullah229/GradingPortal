@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-public class FileManager
+ public static class FileManager
 {
     private const string FilePath = "classes.json";
 
-    public void Save(List<Class> classes)
+    public static void Save(List<Class> classes)
     {
         string json = JsonSerializer.Serialize(classes,
             new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(FilePath, json);
     }
 
-    public List<Class> Load()
+    public static List<Class> Load()
     {
         if (!File.Exists(FilePath))
         {

@@ -17,6 +17,7 @@ namespace GradingSystem;
 
                 AnsiConsole.MarkupLine($"{SelectedStudent.Name}");
                 ListSubjects(SelectedStudent);
+
                 bool GoBack = SelectOptions(SelectedStudent);
                 if (GoBack)
                 {

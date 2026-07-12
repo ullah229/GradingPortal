@@ -107,14 +107,8 @@ namespace GradingSystem;
                 return;
             }
 
-            Class selectedClass = AnsiConsole.Prompt(
-                new SelectionPrompt<Class>()
-                    .Title("Which class do you want to select?")
-                    .UseConverter(k => k.Name)
-                    .AddChoices(classList.OrderBy(k => k.Name)));
-
             StudentHandler shandler = new StudentHandler();
-            shandler.Run(selectedClass);
+            shandler.Run(ui.SelectClass(classList));
             FileManager.Save(classList);
     }
 }

@@ -75,13 +75,8 @@ namespace GradingSystem;
                 return;
             }
 
-            Student selectedStudent = AnsiConsole.Prompt(
-                new SelectionPrompt<Student>()
-                    .Title("Which Student do you want to select?")
-                    .UseConverter(k => k.Name)
-                    .AddChoices(SelectedClass.Students.OrderBy(k => k.Name)));
-            SubjectHandler shandler = new SubjectHandler();
-            shandler.Run(selectedStudent);
+        SubjectHandler shandler = new SubjectHandler();
+        shandler.Run(ui.SelectStudent(SelectedClass));
         }
         private void DeleteStudent(Class SelectedClass)
         {
